@@ -1,0 +1,45 @@
+[
+    {
+        "title": "padding_change_view",
+        "content": "",
+        "subTitle": "",
+        "contentWidget": "PaddingChange"
+    },
+    {
+        "title": "add_remove_widget",
+        "content": "",
+        "subTitle": "",
+        "contentWidget": "AddRemoveWidget"
+    },
+    {
+        "title": "animation_widget",
+        "content": "",
+        "subTitle": "",
+        "contentWidget": "AnimationWidget"
+    },
+    {
+        "title": "canvas_widget",
+        "content": "",
+        "subTitle": "",
+        "contentWidget": "Signature"
+    },
+    {
+        "title": "widgets_by_self",
+        "content": "",
+        "subTitle": "",
+        "contentWidget": "WidgetBySelf"
+    },
+    {
+        "title": "threading_asynchrony",
+        "content": "",
+        "subTitle": "",
+        "contentWidget": "ThreadAsynchrony"
+    },
+    {
+        "title": "Learn",
+        "content": "",
+        "subTitle": "",
+        "contentWidget": ""
+    }
+    
+  ]
