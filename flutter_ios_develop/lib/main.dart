@@ -2,7 +2,7 @@
  * @Author       : Cao Shixin
  * @Date         : 2020-02-26 09:23:54
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2020-02-27 17:52:35
+ * @LastEditTime: 2020-02-27 17:58:31
  * @Description  : 主控制器
  */
 import 'package:flutter/material.dart';
@@ -15,7 +15,7 @@ import 'package:flutter_ios_develop/threading_asynchrony.dart';
 import 'package:flutter_ios_develop/widgets_by_self.dart';
 
 
-void main() => MyApp();
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -66,7 +66,7 @@ class _JsonViewState extends State<JsonView> {
                 child: new Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    // _buildRow(data[index])
+                    _buildRow(data[index])
                   ],
                 ),
               );
