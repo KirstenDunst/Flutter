@@ -25,10 +25,14 @@ dependencies:
   cupertino_icons: ^0.1.2
   english_words: ^3.1.5
   http: ^0.11.3+16
+  flutter_localizations:
+    sdk: flutter
+  # intl: ^0.15.7
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  intl_translation: ^0.17.2
 
 
 # For information on the generic Dart part of this file, see the
@@ -44,6 +48,7 @@ flutter:
 
   assets:
     - assets/content.json
+    - assets/images/doubleTap.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

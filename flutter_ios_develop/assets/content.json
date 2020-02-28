@@ -36,10 +36,40 @@
         "contentWidget": "ThreadAsynchrony"
     },
     {
-        "title": "Learn",
+        "title": "longtime_task_progress",
         "content": "",
         "subTitle": "",
-        "contentWidget": ""
+        "contentWidget": "TaskProgress"
+    },
+    {
+        "title": "local_resource",
+        "content": "",
+        "subTitle": "",
+        "contentWidget": "LocalResource"
+    },
+    {
+        "title": "vc_widgets",
+        "content": "",
+        "subTitle": "",
+        "contentWidget": "VCWidgets"
+    },
+    {
+        "title": "tabview_collection",
+        "content": "",
+        "subTitle": "",
+        "contentWidget": "TabColFlutter"
+    },
+    {
+        "title": "scroll_flutter",
+        "content": "",
+        "subTitle": "",
+        "contentWidget": "ScrollWidget"
+    },
+    {
+        "title": "ges_widget",
+        "content": "",
+        "subTitle": "",
+        "contentWidget": "GesterWidget"
     }
     
   ]

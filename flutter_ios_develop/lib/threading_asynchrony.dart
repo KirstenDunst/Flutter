@@ -1,8 +1,8 @@
 /*
  * @Author       : Cao Shixin
  * @Date         : 2020-02-27 09:27:37
- * @LastEditors  : Cao Shixin
- * @LastEditTime : 2020-02-27 15:22:24
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2020-02-27 18:14:40
  * @Description  : 线程和异步
  * 
  * Dart 是单线程执行模型，但是它支持 Isolate（一种让 Dart 代码运行在其他线程的方式）、事件循环和异步编程。
@@ -156,7 +156,9 @@ class _SampleAppPageOneState extends State<SampleAppPageOne> {
   ListView getListView() => ListView.builder(
     itemBuilder: (BuildContext context, int position){
       return getRow(position);
-  });
+    },
+    itemCount: widgets.length,
+  );
 
   Widget getRow(int i) {
     return Padding(padding: EdgeInsets.all(10.0), child: Text("Row ${widgets[i]["title"]}"));
