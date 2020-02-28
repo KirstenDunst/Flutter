@@ -70,6 +70,18 @@
         "content": "",
         "subTitle": "",
         "contentWidget": "GesterWidget"
+    },
+    {
+        "title": "form_input",
+        "content": "",
+        "subTitle": "",
+        "contentWidget": "FormInput"
+    },
+    {
+        "title": "last_interaction_platform",
+        "content": "",
+        "subTitle": "",
+        "contentWidget": "PlatformInteraction"
     }
     
   ]

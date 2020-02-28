@@ -2,13 +2,15 @@
  * @Author       : Cao Shixin
  * @Date         : 2020-02-26 09:23:54
  * @LastEditors: Cao Shixin
- * @LastEditTime: 2020-02-28 13:41:29
+ * @LastEditTime: 2020-02-28 14:48:39
  * @Description  : 主控制器
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_ios_develop/animation_widget.dart';
 import 'package:flutter_ios_develop/canvas_widget.dart';
+import 'package:flutter_ios_develop/form_input.dart';
 import 'package:flutter_ios_develop/ges_widget.dart';
+import 'package:flutter_ios_develop/last_%20interaction_platform.dart';
 import 'package:flutter_ios_develop/local_resource.dart';
 import 'package:flutter_ios_develop/longtime_task_progress.dart';
 import 'dart:convert' show json;
@@ -30,8 +32,18 @@ class MyApp extends StatelessWidget {
     // final wordPair = new WordPair.random();
     return MaterialApp(
       title: 'Startup Name Generator',
+      /**
+       * 给 App 设置主题
+       * 为了充分发挥你的 App 中 MD 组件的优势，声明一个顶级 widget，MaterialApp，用作你的 App 入口。
+       * MaterialApp 是一个便利组件，包含了许多 App 通常需要的 MD 风格组件。它通过一个 WidgetsApp 添加了 MD 功能来实现。
+       * 
+       * 你也可以在你的 App 中使用 WidgetApp，它提供了许多相似的功能，但不如 MaterialApp 那样强大。
+       * 对任何子组件定义颜色和样式，可以给 MaterialApp widget 传递一个 ThemeData 对象。
+       * 举个例子，在下面的代码中，primary swatch 被设置为蓝色，并且文字的选中颜色是红色：
+       */
       theme: new ThemeData(
-        primaryColor: Colors.blue
+        primaryColor: Colors.blue,
+        textSelectionColor: Colors.red
       ),
       home: new Assets(),
     );
@@ -124,6 +136,12 @@ class _JsonViewState extends State<JsonView> {
             break;
           case "GesterWidget":
             Navigator.push(context, MaterialPageRoute(builder: (context) => GesterWidget()),);
+            break;
+          case "FormInput":
+            Navigator.push(context, MaterialPageRoute(builder: (context) => FormInput()),);
+            break;
+          case "PlatformInteraction":
+            Navigator.push(context, MaterialPageRoute(builder: (context) => PlatformInteraction()),);
             break;
           default:
         }
