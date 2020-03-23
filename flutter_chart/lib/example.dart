@@ -1,6 +1,10 @@
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_chart/chart/chart_bean_focus.dart';
+import 'package:flutter_chart/chart/view/chart_line_focus.dart';
 
 import 'chart/chart_bean.dart';
 import 'chart/chart_pie_bean.dart';
@@ -29,11 +33,12 @@ class ExampleChart extends StatelessWidget {
     return ListView(
       physics: BouncingScrollPhysics(),
       children: <Widget>[
-        _buildChartBarCircle(context),
-        _buildChartBarRound(context),
-        _buildChartCurve(context),
-        _buildChartLine(context),
-        _buildChartPie(context),
+        _buildFocusChartLine(context),
+        // _buildChartBarCircle(context),
+        // _buildChartBarRound(context),
+        // _buildChartCurve(context),
+        // _buildChartLine(context),
+        // _buildChartPie(context),
       ],
     );
   }
@@ -77,6 +82,69 @@ class ExampleChart extends StatelessWidget {
       margin: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
       semanticContainer: true,
       color: Colors.green.withOpacity(0.5),
+      child: chartLine,
+      clipBehavior: Clip.antiAlias,
+    );
+  }
+  ///FocusLine
+  Widget _buildFocusChartLine(context) {
+    var chartLine = ChartLineFocus(
+      chartBeans: [
+        ChartBeanFocus(focus: 32, second: 0),
+        ChartBeanFocus(focus: 62, second: 1),
+        ChartBeanFocus(focus: 78, second: 2),
+        ChartBeanFocus(focus: 62, second: 3),
+        ChartBeanFocus(focus: 90, second: 4),
+        ChartBeanFocus(focus: 100, second: 5),
+        ChartBeanFocus(focus: 11, second: 6),
+        ChartBeanFocus(focus: 55, second: 8),
+        ChartBeanFocus(focus: 77, second: 9),
+        ChartBeanFocus(focus: 62, second: 10),
+        ChartBeanFocus(focus: 93, second: 11),
+        ChartBeanFocus(focus: 62, second: 12),
+        ChartBeanFocus(focus: 43, second: 13),
+        ChartBeanFocus(focus: 22, second: 14),
+        ChartBeanFocus(focus: 77, second: 15),
+        ChartBeanFocus(focus: 88, second: 16),
+        ChartBeanFocus(focus: 87, second: 17),
+        ChartBeanFocus(focus: 70, second: 18),
+        ChartBeanFocus(focus: 60, second: 19),
+        ChartBeanFocus(focus: 21, second: 20),
+        ChartBeanFocus(focus: 22, second: 21),
+        ChartBeanFocus(focus: 19, second: 22),
+        ChartBeanFocus(focus: 15, second: 23),
+        ChartBeanFocus(focus: 100, second: 24),
+      ],
+      size: Size(MediaQuery.of(context).size.width,
+          MediaQuery.of(context).size.height / 5 * 1.6),
+      isCurve: false,
+      xNumValues: ["0","5'","10'","15'","20'","25'"],
+      maxXMinutes: 25,
+      lineWidth: 2,
+      lineColor: Colors.red,
+      fontColor: Colors.black,
+      xyColor: Colors.black,
+      shaderColors: [
+        Colors.yellow.withOpacity(0.3),
+        Colors.yellow.withOpacity(0.1)
+      ],
+      fontSize: 12,
+      // yNum: 3,
+      isAnimation: false,
+      isReverse: false,
+      isShowHintX: true,
+      // isShowHintY: true,
+      isShowPressedHintLine: true,
+      pressedPointRadius: 4,
+      pressedHintLineWidth: 0.5,
+      pressedHintLineColor: Colors.white,
+      duration: Duration(milliseconds: 2000),
+    );
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      margin: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
+      semanticContainer: true,
+      color: Colors.white,
       child: chartLine,
       clipBehavior: Clip.antiAlias,
     );
