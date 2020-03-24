@@ -16,7 +16,6 @@ class ChartLineFocus extends StatefulWidget {
   final bool isShowXyRuler; //是否显示xy刻度
   final bool isShowHintX, isShowHintY; //x、y轴的辅助线
   final bool isShowBorderTop, isShowBorderRight; //顶部和右侧的辅助线
-  // final int yNum; //y刻度文本的数量
   final int maxXMinutes; //最大时间，默认25分钟
   final List<String> xNumValues; //x坐标值显示
   final bool isShowFloat; //y刻度值是否显示小数
@@ -70,7 +69,6 @@ class ChartLineFocus extends StatefulWidget {
   State<StatefulWidget> createState() => ChartLineFocusState();
 }
 
-
 class ChartLineFocusState extends State<ChartLineFocus>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
@@ -109,32 +107,19 @@ class ChartLineFocusState extends State<ChartLineFocus>
   @override
   Widget build(BuildContext context) {
     var painter = ChartLineFocusPainter(widget.chartBeans, widget.lineColor,
-        shaderColors: widget.shaderColors,
         isCurve: widget.isCurve,
         lineWidth: widget.lineWidth,
         fontSize: widget.fontSize,
         fontColor: widget.fontColor,
         xyColor: widget.xyColor,
-        // yNum: widget.yNum,
         xNumValues: widget.xNumValues,
         maxXMinutes: widget.maxXMinutes,
-        isShowFloat: widget.isShowFloat,
-        isShowXy: widget.isShowXy,
         isShowYValue: widget.isShowYValue,
-        isShowXyRuler: widget.isShowXyRuler,
         isShowHintX: widget.isShowHintX,
         isShowHintY: widget.isShowHintY,
-        isShowBorderTop: widget.isShowBorderTop,
-        isShowBorderRight: widget.isShowBorderRight,
         rulerWidth: widget.rulerWidth,
-        isShowPressedHintLine: widget.isShowPressedHintLine,
-        pressedHintLineColor: widget.pressedHintLineColor,
-        pressedHintLineWidth: widget.pressedHintLineWidth,
-        pressedPointRadius: widget.pressedPointRadius,
-        value: widget.isAnimation ? _value : 1,
-        globalPosition: globalPosition);
+        value: widget.isAnimation ? _value : 1);
 
-    
     return CustomPaint(
       size: widget.size,
       painter: widget.backgroundColor == null ? painter : null,

@@ -9,11 +9,11 @@ class ChartBeanFocus {
   int timeDiff;
   List <Color> get gradualColors {
     if (focus > 65) {
-      return [ColorsUtil.hexColor(0xF75E36), Colors.white];
+      return [ColorsUtil.hexColor(0xF75E36), Colors.yellow];
     } else if (focus > 35) {
-      return [ColorsUtil.hexColor(0xFFC278), Colors.white];
+      return [ColorsUtil.hexColor(0xFFC278), Colors.yellow];
     } else {
-      return [ColorsUtil.hexColor(0x172B88), Colors.white];
+      return [ColorsUtil.hexColor(0x172B88), Colors.yellow];
     }
   }
 
