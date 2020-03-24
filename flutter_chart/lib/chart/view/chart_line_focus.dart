@@ -10,10 +10,8 @@ class ChartLineFocus extends StatefulWidget {
   final List<Color> shaderColors; //Line渐变色
   final Color lineColor; //曲线或折线的颜色
   final Color xyColor; //xy轴的颜色
-  final Color backgroundColor; //绘制的背景色
   final bool isShowYValue; //是否显示y轴数值
-  final bool isShowXy; //是否显示坐标轴
-  final bool isShowXyRuler; //是否显示xy刻度
+  final Color backgroundColor; //绘制的背景色
   final bool isShowHintX, isShowHintY; //x、y轴的辅助线
   final bool isShowBorderTop, isShowBorderRight; //顶部和右侧的辅助线
   final int maxXMinutes; //最大时间，默认25分钟
@@ -25,10 +23,6 @@ class ChartLineFocus extends StatefulWidget {
   final Duration duration; //动画时长
   final bool isAnimation; //是否执行动画
   final bool isReverse; //是否重复执行动画
-  final bool isShowPressedHintLine; //触摸时是否显示辅助线
-  final double pressedPointRadius; //触摸点半径
-  final double pressedHintLineWidth; //触摸辅助线宽度
-  final Color pressedHintLineColor; //触摸辅助线颜色
 
   const ChartLineFocus({
     Key key,
@@ -40,14 +34,11 @@ class ChartLineFocus extends StatefulWidget {
     this.lineColor,
     this.xyColor,
     this.backgroundColor,
-    this.isShowXy = true,
     this.isShowYValue = true,
-    this.isShowXyRuler = true,
     this.isShowHintX = false,
     this.isShowHintY = false,
     this.isShowBorderTop = false,
     this.isShowBorderRight = false,
-    // this.yNum,
     this.maxXMinutes,
     this.xNumValues,
     this.isShowFloat,
@@ -57,10 +48,6 @@ class ChartLineFocus extends StatefulWidget {
     this.duration = const Duration(milliseconds: 800),
     this.isAnimation = true,
     this.isReverse = false,
-    this.isShowPressedHintLine = true,
-    this.pressedPointRadius = 4,
-    this.pressedHintLineWidth = 0.5,
-    this.pressedHintLineColor,
   })  : assert(lineColor != null),
         assert(size != null),
         super(key: key);

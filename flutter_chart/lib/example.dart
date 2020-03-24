@@ -129,15 +129,9 @@ class ExampleChart extends StatelessWidget {
         Colors.yellow.withOpacity(0.1)
       ],
       fontSize: 12,
-      // yNum: 3,
       isAnimation: false,
       isReverse: false,
       isShowHintX: true,
-      // isShowHintY: true,
-      isShowPressedHintLine: true,
-      pressedPointRadius: 4,
-      pressedHintLineWidth: 0.5,
-      pressedHintLineColor: Colors.white,
       duration: Duration(milliseconds: 2000),
     );
     return Card(
