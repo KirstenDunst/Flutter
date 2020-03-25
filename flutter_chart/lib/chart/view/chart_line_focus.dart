@@ -5,7 +5,6 @@ import 'package:flutter_chart/chart/painter/chart_line_focus_painter.dart';
 class ChartLineFocus extends StatefulWidget {
   final Size size; //宽高
   final double lineWidth; //线宽
-  final bool isCurve; //标记是否为曲线
   final List<ChartBeanFocus> chartBeans;
   final List<Color> shaderColors; //Line渐变色
   final Color lineColor; //曲线或折线的颜色
@@ -20,16 +19,12 @@ class ChartLineFocus extends StatefulWidget {
   final double fontSize; //刻度文本大小
   final Color fontColor; //文本颜色
   final double rulerWidth; //刻度的宽度或者高度
-  final Duration duration; //动画时长
-  final bool isAnimation; //是否执行动画
-  final bool isReverse; //是否重复执行动画
 
   const ChartLineFocus({
     Key key,
     @required this.size,
     @required this.chartBeans,
     this.lineWidth = 4,
-    this.isCurve = true,
     this.shaderColors,
     this.lineColor,
     this.xyColor,
@@ -45,9 +40,6 @@ class ChartLineFocus extends StatefulWidget {
     this.fontSize,
     this.fontColor,
     this.rulerWidth = 8,
-    this.duration = const Duration(milliseconds: 800),
-    this.isAnimation = true,
-    this.isReverse = false,
   })  : assert(lineColor != null),
         assert(size != null),
         super(key: key);
@@ -59,30 +51,12 @@ class ChartLineFocus extends StatefulWidget {
 class ChartLineFocusState extends State<ChartLineFocus>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
-  double _value = 0;
   double begin = 0.0, end = 1.0;
   Offset globalPosition;
 
   @override
   void initState() {
     super.initState();
-    if (widget.isAnimation) {
-      _controller = AnimationController(vsync: this, duration: widget.duration);
-      Tween(begin: begin, end: end).animate(_controller)
-        ..addStatusListener((status) {
-          if (status == AnimationStatus.completed) {
-            if (widget.isReverse) {
-              _controller.repeat(reverse: widget.isReverse);
-            }
-            print('绘制完成');
-          }
-        })
-        ..addListener(() {
-          _value = _controller.value;
-          setState(() {});
-        });
-      _controller.forward();
-    }
   }
 
   @override
@@ -94,7 +68,6 @@ class ChartLineFocusState extends State<ChartLineFocus>
   @override
   Widget build(BuildContext context) {
     var painter = ChartLineFocusPainter(widget.chartBeans, widget.lineColor,
-        isCurve: widget.isCurve,
         lineWidth: widget.lineWidth,
         fontSize: widget.fontSize,
         fontColor: widget.fontColor,
@@ -104,9 +77,8 @@ class ChartLineFocusState extends State<ChartLineFocus>
         isShowYValue: widget.isShowYValue,
         isShowHintX: widget.isShowHintX,
         isShowHintY: widget.isShowHintY,
-        rulerWidth: widget.rulerWidth,
-        value: widget.isAnimation ? _value : 1);
-
+        rulerWidth: widget.rulerWidth);
+    painter.changeBeanList(widget.chartBeans);
     return CustomPaint(
       size: widget.size,
       painter: widget.backgroundColor == null ? painter : null,

@@ -7,14 +7,12 @@ import 'package:flutter_chart/util/color_utils.dart';
 import 'base_painter.dart';
 
 class ChartLineFocusPainter extends BasePainter {
-  double value; //当前动画值
   List<ChartBeanFocus> chartBeans;
   Color lineColor; //曲线或折线的颜色
   Color xyColor; //xy轴的颜色
   static const double basePadding = 16; //默认的边距
   static const double overPadding = 0; //多出最大的极值额外的线长
   List<double> maxMin = [100, 0]; //存储极值
-  bool isCurve; //是否为曲线
   bool isShowYValue; //是否显示y轴数值
   bool isShowHintX, isShowHintY; //x、y轴的辅助线
   int maxXMinutes; //最大时间，默认25分钟
@@ -25,11 +23,10 @@ class ChartLineFocusPainter extends BasePainter {
   double rulerWidth; //坐标轴的宽度或者高度
   double startX, endX, startY, endY;
   double _fixedHeight, _fixedWidth; //坐标可容纳的宽高
-  Path path;
-  //小区域渐变色显示操作
-  List<ShadowSub> shadowPaths = [];
 
-  bool _isAnimationEnd = false;
+  Path path;
+  List<ShadowSub> shadowPaths = [];//小区域渐变色显示操作
+  bool needReadCavas;//是否需要重绘
 
   static const Color defaultColor = Colors.deepPurple;
 
@@ -37,11 +34,10 @@ class ChartLineFocusPainter extends BasePainter {
     this.chartBeans,
     this.lineColor, {
     this.lineWidth = 4,
-    this.value = 1,
-    this.isCurve = true,
     this.isShowYValue = true,
     this.isShowHintX = false,
     this.isShowHintY = false,
+    this.needReadCavas = false,
     this.rulerWidth = 8,
     this.xyColor = defaultColor,
     this.maxXMinutes = 25,
@@ -59,8 +55,7 @@ class ChartLineFocusPainter extends BasePainter {
 
   @override
   bool shouldRepaint(ChartLineFocusPainter oldDelegate) {
-    _isAnimationEnd = oldDelegate.value == value;
-    return oldDelegate.value != value;
+    return this.needReadCavas;
   }
 
   ///初始化
@@ -68,6 +63,11 @@ class ChartLineFocusPainter extends BasePainter {
     initValue();
     initBorder(size);
     initPath(size);
+  }
+
+  void changeBeanList(List<ChartBeanFocus> chartBeans) {
+    this.chartBeans = chartBeans;
+    this.needReadCavas = true;
   }
 
   void initValue() {
@@ -102,7 +102,6 @@ class ChartLineFocusPainter extends BasePainter {
       if (chartBeans != null && chartBeans.length > 0) {
         path = Path();
         double preX, preY, currentX, currentY, oldX = startX;
-        // chartBeans.length > 7 ? 7 : chartBeans.length;
         for (int i = 0; i < chartBeans.length; i++) {
           //折线轨迹
           double W = (chartBeans[i].timeDiff / (maxXMinutes * 60)) *
@@ -115,6 +114,10 @@ class ChartLineFocusPainter extends BasePainter {
             continue;
           }
           currentX += W;
+          if (currentX >= (_fixedWidth+startX)) {
+            print("绘制结束");
+            return;
+          } 
           preX = oldX;
 
           preY = (startY - chartBeans[i - 1].focus / maxMin[0] * _fixedHeight);
@@ -122,17 +125,16 @@ class ChartLineFocusPainter extends BasePainter {
 
           oldX = currentX;
 
-          if (isCurve) {
-            path.cubicTo((preX + currentX) / 2, preY, (preX + currentX) / 2,
+          //曲线连接轨迹
+          path.cubicTo((preX + currentX) / 2, preY, (preX + currentX) / 2,
                 currentY, currentX, currentY);
-          } else {
-            path.lineTo(currentX, currentY);
-          }
+          //直线连接轨迹
+          // path.lineTo(currentX, currentY);
+
 
           //阴影轨迹
-
           double stepWidth = currentX - preX;
-          //用来控制中间过度线条的大小。如果想看起来不怎么突兀，可以试试将这个改成：stepWidth/4
+          //用来控制中间过度线条的大小。这里让过度小一点用了stepWidth / 8 * 3，如果想看起来不怎么突兀，可以试试将这个改成：stepWidth/4
           double gradualStep = stepWidth / 8 * 3;
           //过度阴影
           Path shadowPath = new Path();
