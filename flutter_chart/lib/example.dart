@@ -1,12 +1,9 @@
-
 import 'dart:async';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_chart/chart/chart_bean_focus.dart';
 import 'package:flutter_chart/chart/view/chart_line_focus.dart';
-
 import 'chart/chart_bean.dart';
 import 'chart/chart_pie_bean.dart';
 import 'chart/view/chart_bar.dart';
@@ -18,6 +15,8 @@ class Example extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      //性能调优可视化
+      showPerformanceOverlay:true,
       //手动关闭debug角标
       // debugShowCheckedModeBanner: false,
       home: AnnotatedRegion(
@@ -33,20 +32,23 @@ class RandomWords extends StatefulWidget {
   createState() => new RandomWordsState();
 }
 class RandomWordsState extends State<RandomWords> {
-  List <ChartBeanFocus> beanList = [];
+  List <ChartBeanFocus> _beanList = [];
   int index = 0;
   Timer countdownTimer;
+  ChartLineFocus chartLine;
+  //这里就是关键的代码，定义一个key
+  GlobalKey<ChartLineFocusState> _childViewKey = new GlobalKey<ChartLineFocusState>();
+
   @override
   Widget build(BuildContext context) {
-
     if (countdownTimer == null) {
       countdownTimer=Timer.periodic(new Duration(seconds: 1), (timer) {
-      // Timer(Duration(seconds: 1), () {
-        setState(() {
-          beanList.add(ChartBeanFocus(focus: Random().nextDouble()*100, second: index));
+        // setState(() {
+          _beanList.add(ChartBeanFocus(focus: Random().nextDouble()*100, second: index));
           index++;
+          _childViewKey.currentState.next.currentState.changeChartBeans(_beanList);
           print("执行次数开始：$index");
-        });
+        // });
       });
     }
     return  ListView(
@@ -57,6 +59,11 @@ class RandomWordsState extends State<RandomWords> {
     );
   }
 
+  @override
+  void initState() {
+    super.initState();
+    
+  }
     // 不要忘记在这里释放掉Timer
   @override
   void dispose() {
@@ -68,22 +75,26 @@ class RandomWordsState extends State<RandomWords> {
 
    ///FocusLine
   Widget _buildFocusChartLine(context) {
-    var chartLine = ChartLineFocus(
-      chartBeans: beanList,
+    chartLine = ChartLineFocus(key: _childViewKey,
       size: Size(MediaQuery.of(context).size.width,
           MediaQuery.of(context).size.height / 5 * 1.6),
-      xNumValues: ["0","5'","10'","15'","20'","25'"],
-      maxXMinutes: 1,
       lineWidth: 1,
+      chartBeans: _beanList,
       lineColor: Colors.transparent,
       fontColor: Colors.black,
       xyColor: Colors.black,
-      shaderColors: [
-        Colors.yellow.withOpacity(0.3),
-        Colors.yellow.withOpacity(0.1)
-      ],
+      xNumValues: ["0","5'","10'","15'","20'","25'"],
       fontSize: 12,
+      maxXMinutes: 1,
+      isShowYValue: true,
       isShowHintX: true,
+      isShowHintY: false,
+      rulerWidth: 8,
+      canvasEnd: (){
+        countdownTimer?.cancel();
+        countdownTimer = null;
+        print("毁灭定时器");
+      },
     );
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -98,9 +109,6 @@ class RandomWordsState extends State<RandomWords> {
 }
 
 class ExampleChart extends StatelessWidget {
-
-  List <ChartBeanFocus> beanList = [];
-  int index = 0;
   @override
   Widget build(BuildContext context) {
     return RandomWords();

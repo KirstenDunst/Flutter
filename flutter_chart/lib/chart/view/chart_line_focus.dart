@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chart/chart/chart_bean_focus.dart';
-import 'package:flutter_chart/chart/painter/chart_line_focus_painter.dart';
+import 'package:flutter_chart/chart/painter/chart_line_focus_base_painter.dart';
+import 'package:flutter_chart/chart/view/chart_line_focus_temp.dart';
 
 class ChartLineFocus extends StatefulWidget {
   final Size size; //宽高
   final double lineWidth; //线宽
   final List<ChartBeanFocus> chartBeans;
-  final List<Color> shaderColors; //Line渐变色
   final Color lineColor; //曲线或折线的颜色
   final Color xyColor; //xy轴的颜色
   final bool isShowYValue; //是否显示y轴数值
@@ -20,12 +20,14 @@ class ChartLineFocus extends StatefulWidget {
   final Color fontColor; //文本颜色
   final double rulerWidth; //刻度的宽度或者高度
 
+  final VoidCallback canvasEnd;
+
   const ChartLineFocus({
     Key key,
     @required this.size,
     @required this.chartBeans,
+    @required this.canvasEnd,
     this.lineWidth = 4,
-    this.shaderColors,
     this.lineColor,
     this.xyColor,
     this.backgroundColor,
@@ -45,30 +47,21 @@ class ChartLineFocus extends StatefulWidget {
         super(key: key);
 
   @override
-  State<StatefulWidget> createState() => ChartLineFocusState();
+  ChartLineFocusState createState() => ChartLineFocusState();
 }
 
 class ChartLineFocusState extends State<ChartLineFocus>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
-  double begin = 0.0, end = 1.0;
-  Offset globalPosition;
+    bool canvasBase = true;
+    ChartLineFocusBasePainter basePainter;
+    CustomPaint basePaint;
+
+    GlobalKey<ChartLineFocusTempState> next = GlobalKey();
 
   @override
   void initState() {
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    if (_controller != null) _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var painter = ChartLineFocusPainter(widget.chartBeans, widget.lineColor,
-        lineWidth: widget.lineWidth,
+    basePainter = ChartLineFocusBasePainter(
         fontSize: widget.fontSize,
         fontColor: widget.fontColor,
         xyColor: widget.xyColor,
@@ -78,18 +71,37 @@ class ChartLineFocusState extends State<ChartLineFocus>
         isShowHintX: widget.isShowHintX,
         isShowHintY: widget.isShowHintY,
         rulerWidth: widget.rulerWidth);
-    painter.changeBeanList(widget.chartBeans);
-    return CustomPaint(
-      size: widget.size,
-      painter: widget.backgroundColor == null ? painter : null,
-      foregroundPainter: widget.backgroundColor != null ? painter : null,
-      child: widget.backgroundColor != null
-          ? Container(
-              width: widget.size.width,
-              height: widget.size.height,
-              color: widget.backgroundColor,
-            )
-          : null,
-    );
+    basePaint = CustomPaint(
+            size: widget.size,
+            painter: basePainter,
+            foregroundPainter: null,
+            child: Container(
+                  width: widget.size.width,
+                  height: widget.size.height,
+                  color: widget.backgroundColor,
+                ),
+          );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print("刷新12e4153452436346");
+    var painter = ChartLineFocusTemp(key: next,
+          size: Size(MediaQuery.of(context).size.width,
+                MediaQuery.of(context).size.height / 5 * 1.6),
+          lineWidth: 1,
+          maxMin:basePainter.maxMin,
+          backgroundColor: widget.backgroundColor,
+          chartBeans: widget.chartBeans,
+          lineColor: Colors.transparent,
+          maxXMinutes: 1,
+          canvasEnd: widget.canvasEnd,
+        );
+    return Stack(
+        children: <Widget>[
+          basePaint,
+          painter,
+        ],
+      ); 
   }
 }
