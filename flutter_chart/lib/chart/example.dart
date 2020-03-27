@@ -2,13 +2,14 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_chart/chart/chart_bean_focus.dart';
-import 'package:flutter_chart/chart/view/chart_line_focus.dart';
-import 'chart/chart_bean.dart';
-import 'chart/chart_pie_bean.dart';
-import 'chart/view/chart_bar.dart';
-import 'chart/view/chart_line.dart';
-import 'chart/view/chart_pie.dart';
+import 'bean/chart_bean.dart';
+import 'bean/chart_bean_focus.dart';
+import 'bean/chart_pie_bean.dart';
+import 'view/chart_bar.dart';
+import 'view/chart_line_focus.dart';
+
+import 'view/chart_line.dart';
+import 'view/chart_pie.dart';
 
 //how to use chart
 class Example extends StatelessWidget {
@@ -92,7 +93,7 @@ class RandomWordsState extends State<RandomWords> {
       fontColor: Colors.black,
       xyColor: Colors.black,
       fontSize: 12,
-      focusXYValues: FocusXYValues(1),
+      focusXYValues: FocusXYValues(120),
       isShowYValue: true,
       isShowHintX: true,
       isShowHintY: false,

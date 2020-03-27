@@ -1,7 +1,6 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_chart/chart/chart_bean.dart';
+import 'package:flutter_chart/chart/bean/chart_bean.dart';
 import 'package:flutter_chart/chart/painter/base_painter.dart';
 
 class ChartLinePainter extends BasePainter {

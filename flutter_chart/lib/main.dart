@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chart/example.dart';
+import 'package:flutter_chart/chart/example.dart';
 
 void main() => runApp(Example());
 

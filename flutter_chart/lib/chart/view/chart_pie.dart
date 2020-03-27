@@ -1,9 +1,7 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_chart/chart/bean/chart_pie_bean.dart';
 import 'package:flutter_chart/chart/painter/chart_pie_painter.dart';
-
-import '../chart_pie_bean.dart';
 
 class ChartPie extends StatefulWidget {
   final Duration duration;

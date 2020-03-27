@@ -1,10 +1,9 @@
 import 'dart:math';
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_chart/chart/bean/chart_pie_bean.dart';
 import 'package:flutter_chart/chart/painter/base_painter.dart';
 
-import '../chart_pie_bean.dart';
 
 class ChartPiePainter extends BasePainter {
   double value; //当前动画值

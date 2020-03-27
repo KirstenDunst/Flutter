@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chart/util/color_utils.dart';
+import 'package:flutter_chart/chart/util/color_utils.dart';
 
 //专注力等级
 enum FocusState {
@@ -12,6 +12,7 @@ class ChartBeanFocus {
   //这个专注值开始的时间，以秒为单位
   // int second;
   double focus;
+
   FocusState get focusState {
     if (focus > 65) {
       return FocusState.FocusStateHigh;
@@ -19,6 +20,23 @@ class ChartBeanFocus {
       return FocusState.FocusStateMid;
     } else {
       return FocusState.FocusStateLow;
+    }
+  }
+
+  double get toneHeightRatio {
+    switch (focusState) {
+      case FocusState.FocusStateHigh:
+        return 1;
+        break;
+      case FocusState.FocusStateMid:
+        return 65/100;
+        break;
+      case FocusState.FocusStateHigh:
+        return 35/100;
+        break;
+      default:
+        return 35/100;
+        break;
     }
   }
 
@@ -86,13 +104,16 @@ class FocusXYValues {
     int startDivisor = rangeList.first;
     int endDivisor = rangeList.last;
     List<int> remainderList = [];
-    int divisor = startDivisor;
+    int divisor = endDivisor;
     for (var i = startDivisor; i <= endDivisor; i++) {
       remainderList.add(i - (number % i));
     }
-    for (var i = 0; i < remainderList.length-1; i++) {
-      if (remainderList[i] > remainderList[i+1]) {
-        divisor = startDivisor+(i+1);
+    //获取差异最小的除数，倒着计算
+    int minPass = remainderList.last;
+    for (var i = remainderList.length-2; i >= 0 ; i--) {
+      if (remainderList[i] < minPass) {
+        divisor = endDivisor-(remainderList.length-1-i);
+        minPass = remainderList[i];
       }
     }
     for (var i = 1; i <= divisor; i++) {

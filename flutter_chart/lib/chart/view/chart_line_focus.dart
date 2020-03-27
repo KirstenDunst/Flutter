@@ -1,7 +1,5 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_chart/chart/chart_bean_focus.dart';
+import 'package:flutter_chart/chart/bean/chart_bean_focus.dart';
 import 'package:flutter_chart/chart/painter/chart_line_focus_painter.dart';
 
 class ChartLineFocus extends StatefulWidget {

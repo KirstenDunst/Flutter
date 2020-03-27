@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter_chart/chart/chart_bean_focus.dart';
+import 'package:flutter_chart/chart/bean/chart_bean_focus.dart';
 import 'base_painter.dart';
 
 class ChartLineFocusPainter extends BasePainter {
@@ -258,20 +258,7 @@ class ChartLineFocusPainter extends BasePainter {
   }
 
   Shader _shader(int index, double preX, double currentX) {
-    double height = 0;
-    switch (chartBeans[index].focusState) {
-      case FocusState.FocusStateHigh:
-        height = startY - fixedHeight;
-        break;
-      case FocusState.FocusStateMid:
-        height = startY - 65/100 * fixedHeight;
-        break;
-      case FocusState.FocusStateLow:
-        height = startY - 35/100 * fixedHeight;
-        break;
-      default:
-        height = startY - 35/100 * fixedHeight;
-    }
+    double height = startY-chartBeans[index].toneHeightRatio*fixedHeight;
     //属于该专注力的固定小方块
     Rect rectFocus = Rect.fromLTRB(
               preX , height, currentX, startY);

@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_chart/chart/chart_bean.dart';
+import 'package:flutter_chart/chart/bean/chart_bean.dart';
 import 'package:flutter_chart/chart/painter/chart_bar_painter.dart';
 
 class ChartBar extends StatefulWidget {
