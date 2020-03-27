@@ -178,7 +178,7 @@ class ChartLineFocusPainter extends BasePainter {
         path = Path();
         double preX, preY, currentX = startX, currentY, oldX = startX;
         Path oldShadowPath = Path();
-        oldShadowPath.moveTo(currentX, startY);
+        oldShadowPath.moveTo(startX, startY);
 
         //折线轨迹,每个元素都是1秒的存在期
         double W = (1 / (focusXYValues.xMaxMinutes * 60)) * fixedWidth; //x轴距离
@@ -190,8 +190,9 @@ class ChartLineFocusPainter extends BasePainter {
             var value =
                 (startY - chartBeans[i].focus / maxMin[0] * fixedHeight);
             path.moveTo(currentX, value);
-            oldShadowPath.lineTo(currentX, value);
-            oldShadowPath.lineTo(currentX+gradualStep, value);
+            oldShadowPath.lineTo(currentX-gradualStep, value);
+            oldShadowPath.lineTo(currentX-gradualStep, value);
+            stepBegainX = startX;
             continue;
           }
           currentX += W;
@@ -231,7 +232,7 @@ class ChartLineFocusPainter extends BasePainter {
             } else {
               oldShadowPath
                 ..lineTo(preX + gradualStep,startY)
-                ..lineTo(preX, startY)
+                ..lineTo(stepBegainX, startY)
                 ..close();
 
               shadowPath.moveTo(currentX, startY);
@@ -240,11 +241,10 @@ class ChartLineFocusPainter extends BasePainter {
               shadowPath.cubicTo((preX + currentX) / 2, preY, (preX + currentX) / 2,
                 currentY, currentX - gradualStep, currentY);
             }
-            
             shadowPath.lineTo(currentX + gradualStep, currentY);
+            shadowPaths.add(new ShadowSub(focusPath: oldShadowPath, rectGradient: _shader(i-1, stepBegainX, currentX)));
             oldShadowPath = shadowPath;
             stepBegainX = currentX;
-            shadowPaths.add(new ShadowSub(focusPath: oldShadowPath, rectGradient: _shader(i, stepBegainX, currentX)));
           }
           oldX = currentX;
         }
@@ -261,16 +261,16 @@ class ChartLineFocusPainter extends BasePainter {
     double height = 0;
     switch (chartBeans[index].focusState) {
       case FocusState.FocusStateHigh:
-        height = startY + fixedHeight;
+        height = startY - fixedHeight;
         break;
       case FocusState.FocusStateMid:
-        height = startY + 65/100 * fixedHeight;
+        height = startY - 65/100 * fixedHeight;
         break;
       case FocusState.FocusStateLow:
-        height = startY + 35/100 * fixedHeight;
+        height = startY - 35/100 * fixedHeight;
         break;
       default:
-        height = startY + 35/100 * fixedHeight;
+        height = startY - 35/100 * fixedHeight;
     }
     //属于该专注力的固定小方块
     Rect rectFocus = Rect.fromLTRB(

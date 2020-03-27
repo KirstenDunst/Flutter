@@ -16,7 +16,7 @@ class Example extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       //性能调优可视化
-      showPerformanceOverlay:true,
+      // showPerformanceOverlay:true,
       //手动关闭debug角标
       // debugShowCheckedModeBanner: false,
       home: AnnotatedRegion(
