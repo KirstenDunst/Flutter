@@ -7,7 +7,6 @@ import 'bean/chart_bean_focus.dart';
 import 'bean/chart_pie_bean.dart';
 import 'view/chart_bar.dart';
 import 'view/chart_line_focus.dart';
-
 import 'view/chart_line.dart';
 import 'view/chart_pie.dart';
 
@@ -33,10 +32,10 @@ class RandomWords extends StatefulWidget {
   RandomWordsState createState() => new RandomWordsState();
 }
 class RandomWordsState extends State<RandomWords> {
+  GlobalKey<ChartLineFocusState> _childViewKey = new GlobalKey<ChartLineFocusState>();
+
   List <ChartBeanFocus> _beanList = [];
   Timer countdownTimer;
-  //定义一个key
-  GlobalKey<ChartLineFocusState> _childViewKey = new GlobalKey<ChartLineFocusState>();
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +61,8 @@ class RandomWordsState extends State<RandomWords> {
         _buildChartCurve(context),
         //折线带填充颜色
         _buildChartLine(context),
+        //双折线
+        _buildDoubleChartLine(context),
         //饼状图
         _buildChartPie(context),
       ],
@@ -197,6 +198,47 @@ class RandomWordsState extends State<RandomWords> {
       margin: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
       semanticContainer: true,
       color: Colors.yellow.withOpacity(0.4),
+      child: chartLine,
+      clipBehavior: Clip.antiAlias,
+    );
+  }
+
+  Widget _buildDoubleChartLine(context){
+    var chartLine = ChartLine(
+      chartBeans: [
+        ChartBean(x: '3-01', y: 30, subY: 70),
+        ChartBean(x: '3-02', y: 88, subY: 20),
+        ChartBean(x: '3-03', y: 20, subY: 30),
+        ChartBean(x: '3-04', y: 67, subY: 50),
+        ChartBean(x: '3-05', y: 10, subY: 100),
+        ChartBean(x: '3-06', y: 40, subY: 30),
+        ChartBean(x: '3-07', y: 10, subY: 0),
+      ],
+      size: Size(MediaQuery.of(context).size.width,
+          MediaQuery.of(context).size.height / 5 * 1.6),
+      isCurve: false,
+      lineWidth: 2,
+      lineColor: Colors.cyan,
+      subLineColor: Colors.red,
+      fontColor: Colors.white,
+      xyColor: Colors.white,
+      fontSize: 12,
+      yNum: 5,
+      isAnimation: true,
+      isReverse: false,
+      isCanTouch: true,
+      isShowPressedHintLine: true,
+      isShowHintX: true,
+      pressedPointRadius: 4,
+      pressedHintLineWidth: 0.5,
+      pressedHintLineColor: Colors.white,
+      duration: Duration(milliseconds: 2000),
+    );
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      margin: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
+      semanticContainer: true,
+      color: Colors.blue.withOpacity(0.4),
       child: chartLine,
       clipBehavior: Clip.antiAlias,
     );

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_chart/chart/bean/chart_bean.dart';
 
@@ -16,15 +18,15 @@ class BasePainter extends CustomPainter {
   ///计算极值 最大值,最小值
   List<double> calculateMaxMin(List<ChartBean> chatBeans) {
     if (chatBeans == null || chatBeans.length == 0) return [0, 0];
-    double max = 0.0, min = 0.0;
+    double maxY = 0.0, minY= 0.0;
     for (ChartBean bean in chatBeans) {
-      if (max < bean.y) {
-        max = bean.y;
+      if (maxY < max(bean.y, bean.subY) ) {
+        maxY = max(bean.y, bean.subY);
       }
-      if (min > bean.y) {
-        min = bean.y;
+      if (minY > min(bean.y, bean.subY)) {
+        minY = min(bean.y, bean.subY);
       }
     }
-    return [max, min];
+    return [maxY, minY];
   }
 }

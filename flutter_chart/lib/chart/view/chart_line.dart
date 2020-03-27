@@ -11,6 +11,7 @@ class ChartLine extends StatefulWidget {
   final List<ChartBean> chartBeans;
   final List<Color> shaderColors; //Line渐变色
   final Color lineColor; //曲线或折线的颜色
+  final Color subLineColor; //副曲线或者折线的颜色
   final Color xyColor; //xy轴的颜色
   final Color backgroundColor; //绘制的背景色
   final bool isShowYValue; //是否显示y轴数值
@@ -40,6 +41,7 @@ class ChartLine extends StatefulWidget {
     this.isCurve = true,
     this.shaderColors,
     this.lineColor,
+    this.subLineColor,
     this.xyColor,
     this.backgroundColor,
     this.isShowXy = true,
@@ -107,7 +109,7 @@ class ChartLineState extends State<ChartLine>
 
   @override
   Widget build(BuildContext context) {
-    var painter = ChartLinePainter(widget.chartBeans, widget.lineColor,
+    var painter = ChartLinePainter(widget.chartBeans, widget.lineColor,widget.subLineColor,
         shaderColors: widget.shaderColors,
         isCurve: widget.isCurve,
         lineWidth: widget.lineWidth,
