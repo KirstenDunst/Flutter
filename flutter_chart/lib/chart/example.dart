@@ -93,7 +93,7 @@ class RandomWordsState extends State<RandomWords> {
       fontColor: Colors.black,
       xyColor: Colors.black,
       fontSize: 12,
-      focusXYValues: FocusXYValues(120),
+      focusXYValues: FocusXYValues(1),
       isShowYValue: true,
       isShowHintX: true,
       isShowHintY: false,

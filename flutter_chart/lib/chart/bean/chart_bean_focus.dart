@@ -82,15 +82,16 @@ class FocusXYValues {
   ];
   //x轴最大的时间
   int xMaxMinutes;
+
   List<String> get xValues {
     String sub = "'";
     int number;
-    if (xMaxMinutes < 3) {
-      number = xMaxMinutes * 60;
+    if (this.xMaxMinutes < 3) {
+      number = this.xMaxMinutes * 60;
       sub = "\"";
       return _getXValues(number, [2, 3], sub);
     } else {
-      number = xMaxMinutes;
+      number = this.xMaxMinutes;
       sub = "'";
       return _getXValues(number, [3, 6], sub);
     }
@@ -106,7 +107,7 @@ class FocusXYValues {
     List<int> remainderList = [];
     int divisor = endDivisor;
     for (var i = startDivisor; i <= endDivisor; i++) {
-      remainderList.add(i - (number % i));
+      remainderList.add(number % i == 0 ? 0 :(i - (number % i)));
     }
     //获取差异最小的除数，倒着计算
     int minPass = remainderList.last;
@@ -117,10 +118,12 @@ class FocusXYValues {
       }
     }
     for (var i = 1; i <= divisor; i++) {
-      var numb = number%divisor == 0 ? number/divisor : (number/divisor +1);
+      var numb = (number+minPass)/divisor;
       var numberStr = (numb*i).toStringAsFixed(0);
       temp.add("$numberStr$sub");
     }
+    //时长记录使用
+    this.xMaxMinutes = sub != "\""? number+minPass : this.xMaxMinutes;
     //处理根据最大的x时间返回来返回的刻度表
     return temp;
   }

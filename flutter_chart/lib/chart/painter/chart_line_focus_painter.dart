@@ -199,7 +199,7 @@ class ChartLineFocusPainter extends BasePainter {
           if (currentX > (fixedWidth + startX)) {
             // 绘制结束
             this.canvasEnd();
-            break;
+            return;
           }
           preX = oldX;
 
@@ -249,8 +249,8 @@ class ChartLineFocusPainter extends BasePainter {
           oldX = currentX;
         }
         oldShadowPath
-              ..lineTo(currentX + W/4, startY)
-              ..lineTo(currentX, startY)
+              ..lineTo(currentX + gradualStep, startY)
+              ..lineTo(stepBegainX, startY)
               ..close();
         shadowPaths.add(new ShadowSub(focusPath: oldShadowPath, rectGradient: _shader(chartBeans.length-1, stepBegainX, currentX)));
       }
