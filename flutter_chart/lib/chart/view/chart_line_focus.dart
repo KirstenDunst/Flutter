@@ -1,7 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_chart/chart/chart_bean_focus.dart';
-import 'package:flutter_chart/chart/painter/chart_line_focus_base_painter.dart';
-import 'package:flutter_chart/chart/view/chart_line_focus_temp.dart';
+import 'package:flutter_chart/chart/painter/chart_line_focus_painter.dart';
 
 class ChartLineFocus extends StatefulWidget {
   final Size size; //宽高
@@ -13,13 +14,11 @@ class ChartLineFocus extends StatefulWidget {
   final Color backgroundColor; //绘制的背景色
   final bool isShowHintX, isShowHintY; //x、y轴的辅助线
   final bool isShowBorderTop, isShowBorderRight; //顶部和右侧的辅助线
-  final int maxXMinutes; //最大时间，默认25分钟
-  final List<String> xNumValues; //x坐标值显示
+  final FocusXYValues focusXYValues;//处理xy的坐标显示
   final bool isShowFloat; //y刻度值是否显示小数
   final double fontSize; //刻度文本大小
   final Color fontColor; //文本颜色
   final double rulerWidth; //刻度的宽度或者高度
-
   final VoidCallback canvasEnd;
 
   const ChartLineFocus({
@@ -36,8 +35,7 @@ class ChartLineFocus extends StatefulWidget {
     this.isShowHintY = false,
     this.isShowBorderTop = false,
     this.isShowBorderRight = false,
-    this.maxXMinutes,
-    this.xNumValues,
+    this.focusXYValues,
     this.isShowFloat,
     this.fontSize,
     this.fontColor,
@@ -52,56 +50,44 @@ class ChartLineFocus extends StatefulWidget {
 
 class ChartLineFocusState extends State<ChartLineFocus>
     with SingleTickerProviderStateMixin {
-    bool canvasBase = true;
-    ChartLineFocusBasePainter basePainter;
-    CustomPaint basePaint;
-
-    GlobalKey<ChartLineFocusTempState> next = GlobalKey();
+  List<ChartBeanFocus> chartBeanList;
+  
+  void changeBeanList(List<ChartBeanFocus> beans) {
+    setState(() {
+      chartBeanList = beans;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    basePainter = ChartLineFocusBasePainter(
-        fontSize: widget.fontSize,
-        fontColor: widget.fontColor,
-        xyColor: widget.xyColor,
-        xNumValues: widget.xNumValues,
-        maxXMinutes: widget.maxXMinutes,
-        isShowYValue: widget.isShowYValue,
-        isShowHintX: widget.isShowHintX,
-        isShowHintY: widget.isShowHintY,
-        rulerWidth: widget.rulerWidth);
-    basePaint = CustomPaint(
-            size: widget.size,
-            painter: basePainter,
-            foregroundPainter: null,
-            child: Container(
-                  width: widget.size.width,
-                  height: widget.size.height,
-                  color: widget.backgroundColor,
-                ),
-          );
   }
 
   @override
   Widget build(BuildContext context) {
-    print("刷新12e4153452436346");
-    var painter = ChartLineFocusTemp(key: next,
-          size: Size(MediaQuery.of(context).size.width,
-                MediaQuery.of(context).size.height / 5 * 1.6),
-          lineWidth: 1,
-          maxMin:basePainter.maxMin,
-          backgroundColor: widget.backgroundColor,
-          chartBeans: widget.chartBeans,
-          lineColor: Colors.transparent,
-          maxXMinutes: 1,
-          canvasEnd: widget.canvasEnd,
-        );
-    return Stack(
-        children: <Widget>[
-          basePaint,
-          painter,
-        ],
-      ); 
+    var painter = ChartLineFocusPainter(chartBeanList, widget.lineColor,
+        lineWidth: widget.lineWidth,
+        focusXYValues: widget.focusXYValues,
+        fontSize: widget.fontSize,
+        fontColor: widget.fontColor,
+        xyColor: widget.xyColor,
+        isShowYValue: widget.isShowYValue,
+        isShowHintX: widget.isShowHintX,
+        isShowHintY: widget.isShowHintY,
+        rulerWidth: widget.rulerWidth,
+        canvasEnd: widget.canvasEnd);
+
+    return CustomPaint(
+        size: widget.size,
+        painter: widget.backgroundColor == null ? painter : null,
+        foregroundPainter: widget.backgroundColor != null ? painter : null,
+        child: widget.backgroundColor != null
+            ? Container(
+                width: widget.size.width,
+                height: widget.size.height,
+                color: widget.backgroundColor,
+              )
+            : null,
+      );
   }
 }

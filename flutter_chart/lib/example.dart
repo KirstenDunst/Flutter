@@ -20,7 +20,7 @@ class Example extends StatelessWidget {
       //手动关闭debug角标
       // debugShowCheckedModeBanner: false,
       home: AnnotatedRegion(
-        child: ExampleChart(), 
+        child: RandomWords(), 
         value: SystemUiOverlayStyle.light.copyWith(statusBarBrightness: Brightness.dark),
       ),
     );
@@ -29,32 +29,40 @@ class Example extends StatelessWidget {
 
 class RandomWords extends StatefulWidget {
   @override
-  createState() => new RandomWordsState();
+  RandomWordsState createState() => new RandomWordsState();
 }
 class RandomWordsState extends State<RandomWords> {
   List <ChartBeanFocus> _beanList = [];
-  int index = 0;
   Timer countdownTimer;
-  ChartLineFocus chartLine;
-  //这里就是关键的代码，定义一个key
+  //定义一个key
   GlobalKey<ChartLineFocusState> _childViewKey = new GlobalKey<ChartLineFocusState>();
 
   @override
   Widget build(BuildContext context) {
     if (countdownTimer == null) {
       countdownTimer=Timer.periodic(new Duration(seconds: 1), (timer) {
-        // setState(() {
-          _beanList.add(ChartBeanFocus(focus: Random().nextDouble()*100, second: index));
-          index++;
-          _childViewKey.currentState.next.currentState.changeChartBeans(_beanList);
-          print("执行次数开始：$index");
-        // });
+        _beanList.add(ChartBeanFocus(focus: Random().nextDouble()*100));
+        // for (var i = 0; i < 60*120; i++) {
+        //    _beanList.add(ChartBeanFocus(focus: Random().nextDouble()*100));
+        // }
+        _childViewKey.currentState.changeBeanList(_beanList);
       });
     }
     return  ListView(
       physics: BouncingScrollPhysics(),
       children: <Widget>[
+        //FN专注力样式图
         _buildFocusChartLine(context),
+        //柱状顶部半圆型
+        _buildChartBarCircle(context),
+        //柱状图顶部自定义弧角
+        _buildChartBarRound(context),
+        //平滑曲线带填充颜色
+        _buildChartCurve(context),
+        //折线带填充颜色
+        _buildChartLine(context),
+        //饼状图
+        _buildChartPie(context),
       ],
     );
   }
@@ -75,7 +83,7 @@ class RandomWordsState extends State<RandomWords> {
 
    ///FocusLine
   Widget _buildFocusChartLine(context) {
-    chartLine = ChartLineFocus(key: _childViewKey,
+    var chartLine = ChartLineFocus(key: _childViewKey,
       size: Size(MediaQuery.of(context).size.width,
           MediaQuery.of(context).size.height / 5 * 1.6),
       lineWidth: 1,
@@ -83,9 +91,8 @@ class RandomWordsState extends State<RandomWords> {
       lineColor: Colors.transparent,
       fontColor: Colors.black,
       xyColor: Colors.black,
-      xNumValues: ["0","5'","10'","15'","20'","25'"],
       fontSize: 12,
-      maxXMinutes: 1,
+      focusXYValues: FocusXYValues(1),
       isShowYValue: true,
       isShowHintX: true,
       isShowHintY: false,
@@ -104,25 +111,6 @@ class RandomWordsState extends State<RandomWords> {
       child: chartLine,
       clipBehavior: Clip.antiAlias,
     );
-  }
-
-}
-
-class ExampleChart extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return RandomWords();
-    // ListView(
-    //   physics: BouncingScrollPhysics(),
-    //   children: <Widget>[
-    //     _buildFocusChartLine(context),
-    //     // _buildChartBarCircle(context),
-    //     // _buildChartBarRound(context),
-    //     // _buildChartCurve(context),
-    //     // _buildChartLine(context),
-    //     // _buildChartPie(context),
-    //   ],
-    // );
   }
 
   ///curve
