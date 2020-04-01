@@ -45,7 +45,9 @@ class RandomWordsState extends State<RandomWords> {
         // for (var i = 0; i < 60*120; i++) {
         //    _beanList.add(ChartBeanFocus(focus: Random().nextDouble()*100));
         // }
-        _childViewKey.currentState.changeBeanList(_beanList);
+        if(_childViewKey.currentState!= null) {
+          _childViewKey.currentState.changeBeanList(_beanList);
+        }
       });
     }
     return  ListView(
