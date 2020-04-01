@@ -46,6 +46,9 @@ class ToolTipWidget extends StatelessWidget {
     this.location,
   });
 
+  //限定活动距离范围差
+  static final offBetwon = 10.0;
+
   @override
   Widget build(BuildContext context) {
     final contentOrientation = location.findPositionForContent();
@@ -55,14 +58,13 @@ class ToolTipWidget extends StatelessWidget {
     final contentY = location.isArrowUp
         ? location.position.getBottom() + (contentOffsetMultiplier * 3)
         : location.position.getTop() + (contentOffsetMultiplier * 3);
-
-    //这里限制如果contentOffsetMultiplier为1.0这里将返回0.0（这个返回尽可能靠近的一个值)
     final contentFractionalOffset = contentOffsetMultiplier.clamp(-1.0, 0.0);
 
     if (container == null) {
+      final offspeace = offBetwon/(location.getTooltipHeight()+location.paddingTopBottomSpeace*2);
       return Stack(
         children: <Widget>[
-          location.showArrow ? _getArrow(contentOffsetMultiplier) : Container(),
+          location.showArrow ? _getArrow(contentFractionalOffset,offBetwon) : Container(),
           Positioned(
             top: contentY,
             left: location.getLeft(),
@@ -71,8 +73,8 @@ class ToolTipWidget extends StatelessWidget {
               translation: Offset(0.0, contentFractionalOffset),
               child: SlideTransition(
                 position: Tween<Offset>(
-                  begin: Offset(0.0, contentFractionalOffset / 10),
-                  end: Offset(0.0, 0.100),
+                  begin: Offset(0.0, contentFractionalOffset == -1 ? -offspeace : 0.0),
+                  end: Offset(0.0, contentFractionalOffset == -1 ? 0.0 : offspeace),
                 ).animate(location.animationOffset),
                 child: Material(
                   color: Colors.transparent,
@@ -131,6 +133,8 @@ class ToolTipWidget extends StatelessWidget {
         ],
       );
     } else {
+      //这里如果能够事先拿到传过来的widget的高度，用offBetwon/(widget高度) 效果会更好。
+      final containerHeight = 0.100;
       return Stack(
         children: <Widget>[
           Positioned(
@@ -140,8 +144,8 @@ class ToolTipWidget extends StatelessWidget {
               translation: Offset(0.0, contentFractionalOffset),
               child: SlideTransition(
                 position: Tween<Offset>(
-                  begin: Offset(0.0, contentFractionalOffset / 5),
-                  end: Offset(0.0, 0.100),
+                  begin: Offset(0.0, contentFractionalOffset == -1 ? -containerHeight: 0.0),
+                  end: Offset(0.0, contentFractionalOffset == -1 ? 0.0 : containerHeight),
                 ).animate(location.animationOffset),
                 child: Material(
                   color: Colors.transparent,
@@ -166,17 +170,17 @@ class ToolTipWidget extends StatelessWidget {
     }
   }
 
-  Widget _getArrow(contentOffsetMultiplier) {
-    final contentFractionalOffset = contentOffsetMultiplier.clamp(-1.0, 0.0);
+  Widget _getArrow(contentFractionalOffset, offBetwon) {
     return Positioned(
-      top: location.isArrowUp ? location.position.getBottom() : location.position.getTop() - 1,
-      left: location.position.getCenter() - 24,
+      top: location.isArrowUp ? location.position.getBottom()+2 : location.position.getTop() - 2,
+      left: location.position.getCenter() - 25,
       child: FractionalTranslation(
         translation: Offset(0.0, contentFractionalOffset),
         child: SlideTransition(
           position: Tween<Offset>(
-            begin: Offset(0.0, contentFractionalOffset / 5),
-            end: Offset(0.0, 0.150),
+            //50是小三角组件的高度，这样同比在动画的时候,动画的幅度都是offBetwon，那么就会同步运动了
+            begin: Offset(0.0, contentFractionalOffset == -1 ? -offBetwon/50 : 0.0),
+            end: Offset(0.0, contentFractionalOffset == -1 ? 0.0 : offBetwon/50),
           ).animate(location.animationOffset),
           child: location.isArrowUp
               ? Icon(

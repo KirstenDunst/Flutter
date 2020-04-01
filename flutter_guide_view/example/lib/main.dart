@@ -386,7 +386,7 @@ class _MailPageState extends State<MailPage> {
         title: 'Compose Mail',
         description: 'Click here to compose mail 1232423',
         // disableAnimation: true,
-        guidePathType: GuidePathType.CenterToBorder,
+        guidePathType: GuidePathType.Triangle,
         guideWireType: GuideWireType.Hollow,
         guideEndType: GuideEndType.SolidTriangle,
         guideDirectionEndType: GuideDirectionEndType.BothPosition,

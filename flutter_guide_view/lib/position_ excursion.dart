@@ -45,17 +45,14 @@ class PositionLocation {
   }
   Point get verticalCenterRightSubPoint {
     double endX = isLeft()?(getLeft() + getTooltipWidth()):(screenSize.width-getRight());
-    double endY = isArrowUp ? (position.getBottom()+paddingTopBottomSpeace + subHeightHalf) : (position.getTop()-paddingTopBottomSpeace-subHeightHalf);
+    double endY = isArrowUp ? (position.getBottom()+paddingTopBottomSpeace + getTooltipHeight()/2) : (position.getTop()-paddingTopBottomSpeace-getTooltipHeight()/2);
     return Point(endX, endY);
   }
   Point get verticalCenterLeftSubPoint {
     double endX = isLeft()?getLeft():(screenSize.width-getRight()-getTooltipWidth());
-    double endY = isArrowUp ? (position.getBottom()+paddingTopBottomSpeace + subHeightHalf) : (position.getTop()-paddingTopBottomSpeace-subHeightHalf);
+    double endY = isArrowUp ? (position.getBottom()+paddingTopBottomSpeace + getTooltipHeight()/2) : (position.getTop()-paddingTopBottomSpeace-getTooltipHeight()/2);
     return Point(endX, endY);
   }
-  //解释文案组件的高度的一半
-  static final subHeightHalf = 25;
-  
 
   PositionLocation(
       {this.position,
@@ -89,6 +86,14 @@ class PositionLocation {
     } else {
       return 'BELOW';
     }
+  }
+  //解释文案组件的高度
+  double getTooltipHeight() {
+    double height = 0;
+    height += title == null ? 0 : 24;
+    height += description == null ? 0 : 16;
+    height += (title != null || description != null) ? 20 : 0;
+    return height;
   }
 
   double getTooltipWidth() {
