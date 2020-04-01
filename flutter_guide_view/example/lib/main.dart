@@ -68,12 +68,12 @@ class _MailPageState extends State<MailPage> {
                                 Showcase(
                                   key: _one,
                                   description: 'Tap to see menu options',
-                                  disableAnimation: true,
-                                  guidePathType: GuidePathType.DirectStraight,
+                                  disableAnimation: false,
+                                  guidePathType: GuidePathType.CenterToBorder,
                                   guideWireType: GuideWireType.Hollow,
                                   guideEndType: GuideEndType.SolidTriangle,
                                   guideDirectionEndType:
-                                      GuideDirectionEndType.EndPosition,
+                                      GuideDirectionEndType.BothPosition,
                                   child: Icon(
                                     Icons.menu,
                                     color: Colors.black45,
@@ -385,11 +385,11 @@ class _MailPageState extends State<MailPage> {
         key: _five,
         title: 'Compose Mail',
         description: 'Click here to compose mail 1232423',
-        disableAnimation: true,
-        guidePathType: GuidePathType.BottomBethel,
+        // disableAnimation: true,
+        guidePathType: GuidePathType.CenterToBorder,
         guideWireType: GuideWireType.Hollow,
         guideEndType: GuideEndType.SolidTriangle,
-        guideDirectionEndType: GuideDirectionEndType.EndPosition,
+        guideDirectionEndType: GuideDirectionEndType.BothPosition,
         shapeBorder: CircleBorder(),
         child: FloatingActionButton(
           backgroundColor: Colors.white,

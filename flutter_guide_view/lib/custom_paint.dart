@@ -37,7 +37,18 @@ class ShapePainter extends CustomPainter {
   final double opacity;
   final PositionLocation location;
 
+  //绘制线路
   Path path = Path();
+  //组件相距最近上或者下的中心点
+  Point mainHoriCloseCenterPoint;
+  //解释组件区域的相距最近对应下或者上的中心点
+  Point subHoriCloseCenterPoint;
+  //组件右侧中心点位置
+  Point mainVertRightPoint;
+  //解释右侧中心点位置
+  Point subVertRightPoint;
+  //解释左侧中心点位置
+  Point subVertLeftPoint;
 
   ShapePainter(
       {@required this.location, this.color, this.shapeBorder, this.opacity});
@@ -51,7 +62,13 @@ class ShapePainter extends CustomPainter {
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => false;
 
-  void _dealPath() {}
+  void _dealPath() {
+    mainHoriCloseCenterPoint = location.horizontalCloseCenterMainPoint;
+    subHoriCloseCenterPoint = location.horizontalCloseCenterSubPoint;
+    mainVertRightPoint = location.verticalCenterRightMainPoint;
+    subVertLeftPoint = location.verticalCenterLeftSubPoint;
+    subVertRightPoint = location.verticalCenterRightSubPoint;
+  }
 
   void _drawCanvas(Canvas canvas, Size size) {
     final paint = Paint();
@@ -80,79 +97,146 @@ class ShapePainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
 
-    double extralInitialSpeace = 0;
-    double extralEndSpeace = 0;
-    //端口样式
-    if (location.guideEndType != GuideEndType.None) {
-      switch (location.guideDirectionEndType) {
-        case GuideDirectionEndType.BothPosition:
-          _drawExtraDescribe(canvas, size, location.startPoint, location.isArrowUp);
-          _drawExtraDescribe(canvas, size, location.endPoint, !location.isArrowUp);
-          extralInitialSpeace =
-              (location.guideEndType == GuideEndType.SolidTriangle ||
-                      location.guideEndType == GuideEndType.HollowTriangle)
-                  ? speaceWidth
-                  : 0;
-          extralEndSpeace =
-              (location.guideEndType == GuideEndType.SolidTriangle ||
-                      location.guideEndType == GuideEndType.HollowTriangle)
-                  ? speaceWidth
-                  : 0;
-          break;
-        case GuideDirectionEndType.InitialPosition:
-          _drawExtraDescribe(canvas, size, location.startPoint, location.isArrowUp);
-          extralInitialSpeace =
-              (location.guideEndType == GuideEndType.SolidTriangle ||
-                      location.guideEndType == GuideEndType.HollowTriangle)
-                  ? speaceWidth
-                  : 0;
-          break;
-        case GuideDirectionEndType.EndPosition:
-          _drawExtraDescribe(canvas, size, location.endPoint, !location.isArrowUp);
-          extralEndSpeace =
-              (location.guideEndType == GuideEndType.SolidTriangle ||
-                      location.guideEndType == GuideEndType.HollowTriangle)
-                  ? speaceWidth
-                  : 0;
-          break;
-        default:
-      }
-    }
-    if (!location.isArrowUp) {
-      extralEndSpeace = -extralEndSpeace;
-      extralInitialSpeace = -extralInitialSpeace;
-    }
-    path.moveTo(location.startPoint.x, location.startPoint.y + extralInitialSpeace);
+    ArrowsDirectType initialDirect, endDirect;
+    Point startPoint, endPoint;
+
+    double excessiveHeight = (location.isArrowUp ? speaceWidth : -speaceWidth);
     //绘制路线
     switch (location.guidePathType) {
       case GuidePathType.DirectStraight:
       case GuidePathType.CenterStraight:
-        path.lineTo(location.endPoint.x, location.endPoint.y - extralEndSpeace);
+        startPoint = mainHoriCloseCenterPoint;
+        endPoint = subHoriCloseCenterPoint;
+        double centerY = (startPoint.y + endPoint.y) / 2;
+        path
+          ..moveTo(startPoint.x, startPoint.y + excessiveHeight)
+          ..lineTo(startPoint.x, centerY)
+          ..lineTo(endPoint.x, centerY)
+          ..lineTo(endPoint.x, endPoint.y - excessiveHeight);
+        initialDirect =
+            location.isArrowUp ? ArrowsDirectType.Up : ArrowsDirectType.Down;
+        endDirect =
+            !location.isArrowUp ? ArrowsDirectType.Up : ArrowsDirectType.Down;
         break;
       case GuidePathType.TopBethel:
+        startPoint = mainHoriCloseCenterPoint;
+        endPoint = subHoriCloseCenterPoint;
+        path.moveTo(startPoint.x, startPoint.y + excessiveHeight);
         path.quadraticBezierTo(
-            location.isArrowUp ? location.endPoint.x : location.startPoint.x,
-            (location.startPoint.y + location.endPoint.y) / 2,
-            location.endPoint.x,
-            location.endPoint.y - extralEndSpeace);
+            location.isArrowUp ? endPoint.x : startPoint.x,
+            (startPoint.y + endPoint.y) / 2,
+            endPoint.x,
+            endPoint.y - excessiveHeight);
+        initialDirect =
+            location.isArrowUp ? ArrowsDirectType.Up : ArrowsDirectType.Down;
+        endDirect =
+            !location.isArrowUp ? ArrowsDirectType.Up : ArrowsDirectType.Down;
         break;
       case GuidePathType.BottomBethel:
+        startPoint = mainHoriCloseCenterPoint;
+        endPoint = subHoriCloseCenterPoint;
+        path.moveTo(startPoint.x, startPoint.y + excessiveHeight);
         path.quadraticBezierTo(
-            location.isArrowUp ? location.startPoint.x : location.endPoint.x,
-            (location.startPoint.y + location.endPoint.y) / 2,
-            location.endPoint.x,
-            location.endPoint.y - extralEndSpeace);
+            location.isArrowUp ? startPoint.x : endPoint.x,
+            (startPoint.y + endPoint.y) / 2,
+            endPoint.x,
+            endPoint.y - excessiveHeight);
+        initialDirect =
+            location.isArrowUp ? ArrowsDirectType.Up : ArrowsDirectType.Down;
+        endDirect =
+            !location.isArrowUp ? ArrowsDirectType.Up : ArrowsDirectType.Down;
         break;
       case GuidePathType.CenterToBorder:
+        startPoint = mainHoriCloseCenterPoint;
+        path.moveTo(startPoint.x, startPoint.y + excessiveHeight);
+        var endArr =
+            _getClosePoint(subVertLeftPoint, subVertRightPoint, startPoint);
+        endPoint = endArr.first;
+        double centerY = (startPoint.y + endPoint.y) / 2;
+        //判断是否需要添加折线
+        if ((subVertLeftPoint.x - speaceWidth - brokeLineSafeWidth) <
+                startPoint.x &&
+            startPoint.x <
+                (subVertRightPoint.x + speaceWidth + brokeLineSafeWidth)) {
+          //需要折线
+          path.lineTo(startPoint.x, centerY);
+        }
+        bool endIsStart = endArr.last;
+        path
+          ..lineTo(
+              endPoint.x +
+                  (endIsStart
+                      ? (-speaceWidth - brokeLineSafeWidth)
+                      : (speaceWidth + brokeLineSafeWidth)),
+              centerY)
+          ..lineTo(
+              endPoint.x +
+                  (endIsStart
+                      ? (-speaceWidth - brokeLineSafeWidth)
+                      : (speaceWidth + brokeLineSafeWidth)),
+              endPoint.y)
+          ..lineTo(endPoint.x + (endIsStart ? (-speaceWidth) : speaceWidth),
+              endPoint.y);
 
+        initialDirect =
+            location.isArrowUp ? ArrowsDirectType.Up : ArrowsDirectType.Down;
+        endDirect = endIsStart ? ArrowsDirectType.Right : ArrowsDirectType.Left;
         break;
-      case GuidePathType.LeftToCenter:
+      case GuidePathType.RightToCenter:
+        startPoint = mainVertRightPoint;
+        endPoint = subHoriCloseCenterPoint;
+        path.moveTo(startPoint.x + speaceWidth, startPoint.y);
+        //判断是否需要添加折线
+        if (endPoint.x < (startPoint.x + speaceWidth)) {
+          //需要折线
+          double centerY = (startPoint.y + endPoint.y) / 2;
+          path
+            ..lineTo(
+                startPoint.x + speaceWidth + brokeLineSafeWidth, startPoint.y)
+            ..lineTo(startPoint.x + speaceWidth + brokeLineSafeWidth, centerY)
+            ..lineTo(endPoint.x, centerY);
+        } else {
+          path..lineTo(endPoint.x, startPoint.y);
+        }
+        path.lineTo(endPoint.x,
+            endPoint.y - (location.isArrowUp ? speaceWidth : -speaceWidth));
 
+        initialDirect = ArrowsDirectType.Left;
+        endDirect =
+            !location.isArrowUp ? ArrowsDirectType.Up : ArrowsDirectType.Down;
         break;
-      case GuidePathType.LeftDirect:
-
+      case GuidePathType.RightDirect:
+        startPoint = mainVertRightPoint;
+        endPoint = Point(startPoint.x + speaceWidth + brokeLineSafeWidth,
+            subHoriCloseCenterPoint.y);
+        path
+          ..moveTo(startPoint.x + speaceWidth, startPoint.y)
+          ..lineTo(
+              startPoint.x + speaceWidth + brokeLineSafeWidth, startPoint.y)
+          ..lineTo(endPoint.x,
+              endPoint.y - (location.isArrowUp ? speaceWidth : -speaceWidth));
+        initialDirect = ArrowsDirectType.Left;
+        endDirect =
+            !location.isArrowUp ? ArrowsDirectType.Up : ArrowsDirectType.Down;
         break;
       default:
+    }
+
+    //端口样式
+    if (location.guideEndType != GuideEndType.None) {
+      switch (location.guideDirectionEndType) {
+        case GuideDirectionEndType.BothPosition:
+          _drawExtraDescribe(canvas, size, startPoint, initialDirect);
+          _drawExtraDescribe(canvas, size, endPoint, endDirect);
+          break;
+        case GuideDirectionEndType.InitialPosition:
+          _drawExtraDescribe(canvas, size, startPoint, initialDirect);
+          break;
+        case GuideDirectionEndType.EndPosition:
+          _drawExtraDescribe(canvas, size, endPoint, endDirect);
+          break;
+        default:
+      }
     }
 
     //两种绘制方式
@@ -169,9 +253,19 @@ class ShapePainter extends CustomPainter {
     }
   }
 
+//比较x轴方向的距离那个比较近
+//startPoint endPoint :解释组件的左右边中心点， nowPoint当前要比较的点
+  List _getClosePoint(Point startPoint, Point endPoint, Point nowPoint) {
+    double startWidth = (startPoint.x - nowPoint.x).abs();
+    double endWidth = (endPoint.x - nowPoint.x).abs();
+    return startWidth > endWidth ? [endPoint, false] : [startPoint, true];
+  }
+
+  static double brokeLineSafeWidth = 5;
   static double speaceWidth = 5;
   //绘制箭头，三角形
-  void _drawExtraDescribe(Canvas canvas, Size size, Point point, bool upDown) {
+  void _drawExtraDescribe(
+      Canvas canvas, Size size, Point point, ArrowsDirectType directType) {
     //辅助引导线绘制
     final paintSub = Paint()
       ..color = Colors.white
@@ -181,13 +275,25 @@ class ShapePainter extends CustomPainter {
     Path cellPath = Path();
     cellPath.moveTo(point.x, point.y);
     Point leftPoint, rightPoint;
-    if (upDown) {
-      //角朝上
-      leftPoint = Point(point.x - speaceWidth, point.y + speaceWidth);
-      rightPoint = Point(point.x + speaceWidth, point.y + speaceWidth);
-    } else {
-      leftPoint = Point(point.x - speaceWidth, point.y - speaceWidth);
-      rightPoint = Point(point.x + speaceWidth, point.y - speaceWidth);
+    switch (directType) {
+      case ArrowsDirectType.Up:
+        //角朝上
+        leftPoint = Point(point.x - speaceWidth, point.y + speaceWidth);
+        rightPoint = Point(point.x + speaceWidth, point.y + speaceWidth);
+        break;
+      case ArrowsDirectType.Down:
+        leftPoint = Point(point.x - speaceWidth, point.y - speaceWidth);
+        rightPoint = Point(point.x + speaceWidth, point.y - speaceWidth);
+        break;
+      case ArrowsDirectType.Left:
+        leftPoint = Point(point.x + speaceWidth, point.y - speaceWidth);
+        rightPoint = Point(point.x + speaceWidth, point.y + speaceWidth);
+        break;
+      case ArrowsDirectType.Right:
+        leftPoint = Point(point.x - speaceWidth, point.y - speaceWidth);
+        rightPoint = Point(point.x - speaceWidth, point.y + speaceWidth);
+        break;
+      default:
     }
     cellPath.lineTo(leftPoint.x, leftPoint.y);
     if (location.guideEndType == GuideEndType.Arrows) {

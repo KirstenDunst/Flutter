@@ -324,8 +324,8 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
       case GuidePathType.TopBethel:
       case GuidePathType.BottomBethel:
       case GuidePathType.CenterToBorder:
-      case GuidePathType.LeftToCenter:
-      case GuidePathType.LeftDirect:
+      case GuidePathType.RightToCenter:
+      case GuidePathType.RightDirect:
         paddingTopBottomSpeace = 67.0;
         break;
       default:

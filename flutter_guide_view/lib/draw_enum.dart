@@ -17,10 +17,10 @@ enum GuidePathType {
   BottomBethel,
   //center to border,就近的border
   CenterToBorder,
-  //left to center，组件左侧的边界中心指向解释组件的顶或者底的中心
-  LeftToCenter,
-  //left to direct,组件左侧的边界中心距离解释最近的直线
-  LeftDirect,
+  //right to center，组件左侧的边界中心指向解释组件的顶或者底的中心
+  RightToCenter,
+  //right to direct,组件左侧的边界中心距离解释最近的直线
+  RightDirect,
 }
 //引导线为线时实线or虚线
 enum GuideWireType {

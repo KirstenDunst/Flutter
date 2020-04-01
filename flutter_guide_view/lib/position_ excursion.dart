@@ -20,14 +20,14 @@ class PositionLocation {
   final bool showArrow;
   bool isArrowUp;
   final double paddingTopBottomSpeace;
-  Point get startPoint {
+  Point get horizontalCloseCenterMainPoint {
     return Point(
         position.getCenter(),
         isArrowUp
             ? position.getBottom()
             : position.getTop());
   }
-  Point get endPoint {
+  Point get horizontalCloseCenterSubPoint {
     double endX = position.getCenter();
     if (guidePathType != GuidePathType.DirectStraight) {
       endX = isLeft()
@@ -39,6 +39,23 @@ class PositionLocation {
     double endY = isArrowUp ? (position.getBottom()+paddingTopBottomSpeace) : (position.getTop()-paddingTopBottomSpeace);
     return Point(endX, endY);
   }
+  Point get verticalCenterRightMainPoint {
+    Rect orignRect = position.getRect();
+    return Point(orignRect.centerRight.dx, orignRect.centerRight.dy);
+  }
+  Point get verticalCenterRightSubPoint {
+    double endX = isLeft()?(getLeft() + getTooltipWidth()):(screenSize.width-getRight());
+    double endY = isArrowUp ? (position.getBottom()+paddingTopBottomSpeace + subHeightHalf) : (position.getTop()-paddingTopBottomSpeace-subHeightHalf);
+    return Point(endX, endY);
+  }
+  Point get verticalCenterLeftSubPoint {
+    double endX = isLeft()?getLeft():(screenSize.width-getRight()-getTooltipWidth());
+    double endY = isArrowUp ? (position.getBottom()+paddingTopBottomSpeace + subHeightHalf) : (position.getTop()-paddingTopBottomSpeace-subHeightHalf);
+    return Point(endX, endY);
+  }
+  //解释文案组件的高度的一半
+  static final subHeightHalf = 25;
+  
 
   PositionLocation(
       {this.position,
@@ -76,7 +93,7 @@ class PositionLocation {
 
   double getTooltipWidth() {
     double titleLength = title == null ? 0 : (title.length * 10.0);
-    double descriptionLength = (description.length * 7.0);
+    double descriptionLength = description == null ? 0 :(description.length * 7.0);
     return (max(titleLength, descriptionLength) + 10);
   }
 
