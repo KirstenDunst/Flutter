@@ -59,6 +59,8 @@ class Showcase extends StatefulWidget {
   final GuideWireType guideWireType;
   final GuideEndType guideEndType;
   final GuideDirectionEndType guideDirectionEndType;
+  //是否展示跳过按钮,默认不显示
+  final isShowSkip;
 
   const Showcase(
       {@required this.key,
@@ -79,7 +81,8 @@ class Showcase extends StatefulWidget {
       this.guidePathType = GuidePathType.Triangle,
       this.guideWireType,
       this.guideEndType,
-      this.guideDirectionEndType})
+      this.guideDirectionEndType,
+      this.isShowSkip = false})
       : height = null,
         width = null,
         container = null,
@@ -128,7 +131,8 @@ class Showcase extends StatefulWidget {
       this.onTargetClick,
       this.disposeOnTap,
       this.animationDuration = const Duration(milliseconds: 2000),
-      this.disableAnimation = false})
+      this.disableAnimation = false,
+      this.isShowSkip = false})
       : this.guidePathType = GuidePathType.None,
         this.guideWireType = GuideWireType.Solid,
         this.guideEndType = GuideEndType.None,
@@ -233,6 +237,10 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
     }
   }
 
+  _dismissCaseView() {
+    ShowCaseWidget.of(context).dismiss();
+  }
+
   _getOnTargetTap() {
     if (widget.disposeOnTap == true) {
       return widget.onTargetClick == null
@@ -303,7 +311,10 @@ class _ShowcaseState extends State<Showcase> with TickerProviderStateMixin {
             textColor: widget.textColor,
             container: widget.container,
             onTooltipTap: _getOnTooltipTap(),
+            backgroundTipTap: _nextIfAny,
             location: location,
+            isShowSkip: widget.isShowSkip,
+            dismissCaseViewTip: _dismissCaseView,
           ),
         ],
       ),

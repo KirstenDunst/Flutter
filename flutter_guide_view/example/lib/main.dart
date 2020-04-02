@@ -69,7 +69,7 @@ class _MailPageState extends State<MailPage> {
                                   key: _one,
                                   description: 'Tap to see menu options',
                                   disableAnimation: false,
-                                  guidePathType: GuidePathType.CenterToBorder,
+                                  guidePathType: GuidePathType.None,
                                   guideWireType: GuideWireType.Hollow,
                                   guideEndType: GuideEndType.SolidTriangle,
                                   guideDirectionEndType:
@@ -96,6 +96,7 @@ class _MailPageState extends State<MailPage> {
                             key: _two,
                             title: 'Profile',
                             description: 'Tap to see profile',
+                            isShowSkip: true,
                             guidePathType: GuidePathType.CenterStraight,
                             guideWireType: GuideWireType.Hollow,
                             guideEndType: GuideEndType.SolidTriangle,

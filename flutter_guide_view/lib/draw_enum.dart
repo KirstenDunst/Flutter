@@ -1,6 +1,5 @@
-/*
- * 线条绘制枚举定义
- */
+//线条绘制枚举定义
+import 'package:flutter/material.dart';
 
 enum GuidePathType {
   //什么引导都不要
