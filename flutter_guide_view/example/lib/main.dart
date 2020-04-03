@@ -68,12 +68,12 @@ class _MailPageState extends State<MailPage> {
                                 Showcase(
                                   key: _one,
                                   description: 'Tap to see menu options',
-                                  disableAnimation: false,
-                                  guidePathType: GuidePathType.None,
+                                  disableAnimation: true,
+                                  guidePathType: GuidePathType.RightToCenter,
                                   guideWireType: GuideWireType.Hollow,
                                   guideEndType: GuideEndType.SolidTriangle,
                                   guideDirectionEndType:
-                                      GuideDirectionEndType.BothPosition,
+                                      GuideDirectionEndType.EndPosition,
                                   child: Icon(
                                     Icons.menu,
                                     color: Colors.black45,
