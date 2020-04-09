@@ -1,111 +1,122 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      title: '文本字体样式',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: MyAppPage(title: '文本字体样式'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
+class MyAppPage extends StatefulWidget {
   final String title;
+  MyAppPage({Key key, this.title}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  MyAppPageState createState() => MyAppPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
+class MyAppPageState extends State<MyAppPage> {
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
+      body: ListView(
+        scrollDirection: Axis.vertical,
+        children: <Widget>[
+          Text(
+            "Hello world",
+            textAlign: TextAlign.left,
+          ),
+          Text(
+            "Hello world! I'm Jack. " * 4,
+            maxLines: 1,
+            //overflow来指定截断方式，默认是直接截断，TextOverflow.ellipsis，它会将多余文本截断后以省略符“...”表示；
+            overflow: TextOverflow.ellipsis,
+          ),
+          Text(
+            "Hello world",
+            //textScaleFactor：代表文本相对于当前字体大小的缩放因子，相对于去设置文本的样式style属性的fontSize，
+            //它是调整字体大小的一个快捷方式。该属性的默认值可以通过MediaQueryData.textScaleFactor获得，
+            //如果没有MediaQuery，那么会默认值将为1.0。
+            textScaleFactor: 1.5,
+          ),
+          Text(
+            "Hello world",
+            //TextStyle用于指定文本显示的样式如颜色、字体、粗细、背景等。
+            style: TextStyle(
+                color: Colors.blue,
+                fontSize: 18.0,
+                height: 1.2,
+                fontFamily: "Courier",
+                background: new Paint()..color = Colors.yellow,
+                decoration: TextDecoration.underline,
+                decorationStyle: TextDecorationStyle.dashed),
+          ),
+          /*
+           * height：该属性用于指定行高，但它并不是一个绝对值，而是一个因子，具体的行高等于fontSize*height。
+           * 
+           * fontFamily ：由于不同平台默认支持的字体集不同，所以在手动指定字体时一定要先在不同平台测试一下。
+           * 
+           * fontSize：该属性和Text的textScaleFactor都用于控制字体大小。但是有两个主要区别：
+           *     fontSize可以精确指定字体大小，而textScaleFactor只能通过缩放比例来控制。
+           *     textScaleFactor主要是用于系统字体大小设置改变时对Flutter应用字体进行全局调整，而fontSize通常用于单个文本，字体大小不会跟随系统字体大小变化。
+           */
+
+          //TextSpan: 让Text内容的不同部分按照不同的样式显示。TextSpan，它代表文本的一个“片段”。
+          Text.rich(TextSpan(children: [
+            TextSpan(text: "Home: "),
+            TextSpan(
+                text: "https://flutterchina.club",
+                style: TextStyle(color: Colors.blue),
+                recognizer: _tapRecognizer()),
+          ])),
+
+          /*
+   * DefaultTextStyle
+   * 
+   * 在Widget树中，文本的样式默认是可以被继承的（子类文本类组件未指定具体样式时可以使用Widget树中父级设置的默认样式），
+   * 因此，如果在Widget树的某一个节点处设置一个默认的文本样式，那么该节点的子树中所有文本都会默认使用这个样式，
+   * 而DefaultTextStyle正是用于设置默认文本样式的。
+   */
+          DefaultTextStyle(
+            //1.设置文本默认样式
+            style: TextStyle(
+              color: Colors.red,
+              fontSize: 20.0,
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
+            textAlign: TextAlign.start,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text("hello world"),
+                Text("I am Jack"),
+                Text(
+                  "I am Jack",
+                  style: TextStyle(
+                      inherit: false, //2.不继承默认样式
+                      color: Colors.grey),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+
+          
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  GestureRecognizer _tapRecognizer() {
+    print('跳转操作');
+    //这里点击链接后的一个处理器，可以做跳转操作等。
   }
 }
