@@ -3,109 +3,170 @@ import 'package:flutter/material.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+  final String titleStr = '流式布局';
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      title: titleStr,
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: MyAppPage(title: titleStr),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
+class MyAppPage extends StatefulWidget {
   final String title;
+  MyAppPage({Key key, this.title}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _MyAppPageState createState() => _MyAppPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+/*
+ * 在介绍Row和Colum时，如果子widget超出屏幕范围，则会报溢出错误。
+ * 例如：Text("xxx"*100)，可以看到，右边溢出部分报错。这是因为Row默认只有一行，如果超出屏幕不会折行。
+ * 
+ * 我们把超出屏幕显示范围会自动折行的布局称为流式布局。
+ * Flutter中通过Wrap和Flow来支持流式布局，将上例中的Row换成Wrap后溢出部分则会自动折行，下面我们分别介绍Wrap和Flow.
+ */
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
+class _MyAppPageState extends State<MyAppPage> {
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
-        ),
+      body:
+          /*
+         * Wrap的很多属性在Row（包括Flex和Column）中也有，如direction、crossAxisAlignment、textDirection、verticalDirection等，这些参数意义是相同的，我们不再重复介绍。
+         * 
+         * 下面我们看一下Wrap特有的几个属性：
+         * 
+         * spacing：主轴方向子widget的间距
+         * runSpacing：纵轴方向的间距
+         * runAlignment：纵轴方向的对齐方式
+         */
+          //     Wrap(
+          //   spacing: 8.0, // 主轴(水平)方向间距
+          //   runSpacing: 4.0, // 纵轴（垂直）方向间距
+          //   alignment: WrapAlignment.center, //沿主轴方向居中
+          //   children: <Widget>[
+          //     new Chip(
+          //       avatar: new CircleAvatar(
+          //           backgroundColor: Colors.blue, child: Text('A')),
+          //       label: new Text('Hamilton'),
+          //     ),
+          //     new Chip(
+          //       avatar: new CircleAvatar(
+          //           backgroundColor: Colors.blue, child: Text('M')),
+          //       label: new Text('Lafayette'),
+          //     ),
+          //     new Chip(
+          //       avatar: new CircleAvatar(
+          //           backgroundColor: Colors.blue, child: Text('H')),
+          //       label: new Text('Mulligan'),
+          //     ),
+          //     new Chip(
+          //       avatar: new CircleAvatar(
+          //           backgroundColor: Colors.blue, child: Text('J')),
+          //       label: new Text('Laurens'),
+          //     ),
+          //   ],
+          // ),
+
+          //我们一般很少会使用Flow，因为其过于复杂，需要自己实现子widget的位置转换，在很多场景下首先要考虑的是Wrap是否满足需求。
+          //Flow主要用于一些需要自定义布局策略或性能要求较高(如动画中)的场景。
+
+          /*
+       * Flow有如下优点：
+       * 1.性能好；Flow是一个对子组件尺寸以及位置调整非常高效的控件，Flow用转换矩阵在对子组件进行位置调整的时候进行了优化：
+       *      在Flow定位过后，如果子组件的尺寸或者位置发生了变化，在FlowDelegate中的paintChildren()方法中调用context.paintChild 进行重绘，
+       *      而context.paintChild在重绘时使用了转换矩阵，并没有实际调整组件位置。
+       * 2.灵活；由于我们需要自己实现FlowDelegate的paintChildren()方法，所以我们需要自己计算每一个组件的位置，
+       *      因此，可以自定义布局策略。
+       *
+       * 缺点:
+       * 1.使用复杂。
+       * 2.不能自适应子组件大小，必须通过指定父容器大小或实现TestFlowDelegate的getSize返回固定大小。 
+       */
+
+          Flow(
+        delegate: TestFlowDelegate(margin: EdgeInsets.all(10.0)),
+        children: <Widget>[
+          new Container(
+            width: 80.0,
+            height: 80.0,
+            color: Colors.red,
+          ),
+          new Container(
+            width: 80.0,
+            height: 80.0,
+            color: Colors.green,
+          ),
+          new Container(
+            width: 80.0,
+            height: 80.0,
+            color: Colors.blue,
+          ),
+          new Container(
+            width: 80.0,
+            height: 80.0,
+            color: Colors.yellow,
+          ),
+          new Container(
+            width: 80.0,
+            height: 80.0,
+            color: Colors.brown,
+          ),
+          new Container(
+            width: 80.0,
+            height: 80.0,
+            color: Colors.purple,
+          ),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+}
+
+//实现TestFlowDelegate:
+class TestFlowDelegate extends FlowDelegate {
+  //主要的任务就是实现paintChildren，它的主要任务是确定每个子widget位置。由于Flow不能自适应子widget的大小，
+  //我们通过在getSize返回一个固定大小来指定Flow的大小
+  
+  EdgeInsets margin = EdgeInsets.zero;
+  TestFlowDelegate({this.margin});
+  @override
+  void paintChildren(FlowPaintingContext context) {
+    var x = margin.left;
+    var y = margin.top;
+    //计算每一个子widget的位置
+    for (int i = 0; i < context.childCount; i++) {
+      var w = context.getChildSize(i).width + x + margin.right;
+      if (w < context.size.width) {
+        context.paintChild(i,
+            transform: new Matrix4.translationValues(x, y, 0.0));
+        x = w + margin.left;
+      } else {
+        x = margin.left;
+        y += context.getChildSize(i).height + margin.top + margin.bottom;
+        //绘制子widget(有优化)
+        context.paintChild(i,
+            transform: new Matrix4.translationValues(x, y, 0.0));
+        x += context.getChildSize(i).width + margin.left + margin.right;
+      }
+    }
+  }
+
+  @override
+  getSize(BoxConstraints constraints) {
+    //指定Flow的大小
+    return Size(double.infinity, 200.0);
+  }
+
+  @override
+  bool shouldRepaint(FlowDelegate oldDelegate) {
+    return oldDelegate != this;
   }
 }
