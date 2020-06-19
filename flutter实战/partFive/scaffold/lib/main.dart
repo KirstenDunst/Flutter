@@ -2,7 +2,7 @@
  * @Author: Cao Shixin
  * @Date: 2020-06-19 17:47:15
  * @LastEditors: Cao Shixin
- * @LastEditTime: 2020-06-19 18:22:36
+ * @LastEditTime: 2020-06-19 18:33:39
  * @Description: 
  * @Email: cao_shixin@yahoo.com
  * @Company: BrainCo
@@ -10,6 +10,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:scaffold/draw.dart';
+import 'package:scaffold/tab_one.dart';
+import 'package:scaffold/tab_three.dart';
+import 'package:scaffold/tab_two.dart';
 
 void main() => runApp(MyApp());
 
@@ -30,7 +33,14 @@ class ScaffoldRoute extends StatefulWidget {
 }
 
 class _ScaffoldRouteState extends State<ScaffoldRoute> {
-  int _selectedIndex = 1;
+  int _selectedIndex = 0;
+  List<Widget> _tabs = [];
+
+  @override
+  void initState() {
+    _tabs = [TabOne(),TabTwo(),TabThree()];
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +71,7 @@ class _ScaffoldRouteState extends State<ScaffoldRoute> {
           //悬浮按钮
           child: Icon(Icons.add),
           onPressed: _onAdd),
-      body: Text('ceshi'),
+      body: _tabs[_selectedIndex],
     );
   }
 
