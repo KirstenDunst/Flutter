@@ -2,161 +2,86 @@
  * @Author: Cao Shixin
  * @Date: 2020-11-20 17:04:49
  * @LastEditors: Cao Shixin
- * @LastEditTime: 2020-11-20 19:09:13
+ * @LastEditTime: 2020-11-25 10:14:03
  * @Description: 
  */
+import 'package:Test/UIExample/dragable_widget.dart';
 import 'package:flutter/material.dart';
+
+import 'UIExample/tabbar_tabbarview.dart';
 
 void main() {
   runApp(MyApp());
 }
 
+final Map<String, WidgetBuilder> _routes = {
+  TabbarTabbarView.routeName: (_) => TabbarTabbarView(),
+  DraggableWidget.routeName: (_) => DraggableWidget(),
+};
+
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
-  TabController _tabController; //需要定义一个Controller
-  Map<String, List<String>> tabs;
-
-  @override
-  void initState() {
-    super.initState();
-    tabs = <String, List<String>>{};
-    for (var i = 0; i < 10; i++) {
-      tabs['$i'] = [
-        "新闻$i",
-        "历史$i",
-        "图片$i",
-        "新闻$i",
-        "历史$i",
-        "图片$i",
-        "新闻$i",
-        "历史$i",
-        "图片$i",
-        "新闻$i",
-        "历史$i",
-        "图片$i",
-        "新闻$i",
-        "历史$i",
-        "图片$i",
-        "新闻$i",
-        "历史$i",
-        "图片$i",
-      ];
-    }
-    // 创建Controller
-    _tabController = TabController(length: tabs.length, vsync: this);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        bottom: TabBar(
-          //生成Tab菜单
-          isScrollable: true,
-          controller: _tabController,
-          tabs: tabs.keys.map((f) {
-            return Container(
-              alignment: Alignment.center,
-              width: 80,
-              child: Text(
-                f,
-                style: TextStyle(color: Colors.black, fontSize: 22),
-              ),
-            );
-          }).toList(),
+      theme: ThemeData(primaryColor: Colors.blue),
+      routes: _routes,
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Flutter Demo'),
         ),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: tabs.values.map((e) {
-          //创建3个Tab页
-          return MyHomePageCell(e);
-        }).toList(),
+        body: MyAppPage(),
       ),
     );
   }
 }
 
-class MyHomePageCell extends StatefulWidget {
-  final List<String> tempArr;
-  MyHomePageCell(this.tempArr);
+class MyAppPage extends StatefulWidget {
   @override
-  _MyHomePageCellState createState() => _MyHomePageCellState();
+  _MyAppPageState createState() => _MyAppPageState();
 }
 
-class _MyHomePageCellState extends State<MyHomePageCell>
-    with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
-  TabController _tabController; //需要定义一个Controller
+class _MyAppPageState extends State<MyAppPage> {
+  List<CellModel> _demoTitleArr = [];
 
   @override
   void initState() {
     super.initState();
-    // 创建Controller
-    _tabController = TabController(length: widget.tempArr.length, vsync: this);
+    _demoTitleArr = [
+      CellModel(
+          title: TabbarTabbarView.navTitle,
+          routeName: TabbarTabbarView.routeName),
+      CellModel(
+          title: DraggableWidget.navTitle,
+          routeName: DraggableWidget.routeName),
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-    return Column(children: [
-      Container(
-        height: 80,
-        child: TabBar(
-          //生成Tab菜单
-          isScrollable: true,
-          controller: _tabController,
-          tabs: widget.tempArr.map((f) {
-            return Container(
-              alignment: Alignment.center,
-              width: 80,
-              child: Text(
-                f,
-                style: TextStyle(color: Colors.black, fontSize: 22),
-              ),
-            );
-          }).toList(),
-        ),
-      ),
-      Expanded(
-        child: TabBarView(
-          controller: _tabController,
-          children: widget.tempArr.map((e) {
-            //创建3个Tab页
-            return SingleChildScrollView(
-              child: Container(
-                height: 1000,
-                alignment: Alignment.center,
-                child: Text(e, textScaleFactor: 3),
-              ),
-            );
-          }).toList(),
-        ),
-      ),
-    ]);
+    return ListView.builder(
+      itemBuilder: (context, index) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.of(context).pushNamed(_demoTitleArr[index].routeName);
+          },
+          child: ListTile(
+            title: Center(
+              child: Text(_demoTitleArr[index].title),
+            ),
+          ),
+        );
+      },
+      itemCount: _demoTitleArr.length,
+    );
   }
+}
 
-  @override
-  bool get wantKeepAlive => true;
+class CellModel {
+  //显示标题
+  String title;
+  //路由地址名
+  String routeName;
+
+  CellModel({this.title, this.routeName});
 }
